@@ -16,6 +16,7 @@ import openmeteo_requests
 import tkinter.font as tkFont
 import datetime
 import webbrowser
+import time as t
 
 # Get location based on IP Address, then store the latitutude and longitude
 # in a file so that we don't look it up every time.
@@ -84,6 +85,12 @@ def open_link(link: str):
     firefox = webbrowser.Mozilla("/usr/bin/firefox")
     firefox.open(link)
 
+def update_time():
+    current_time = t.strftime('%H:%M:%S')
+    time.config(text="--- Current date and time ---\n" + \
+                str(datetime.date.today()) + " " + current_time)
+    time.after(1000, update_time)
+
 
 # FIXME: TBH should be in a frame
 
@@ -131,6 +138,11 @@ email = tk.Button(linkframe, text="Open email", \
 email.grid(row=2, column=0)
 
 linkframe.grid(row=1, column=2)
+
+time = tk.Label(root, text="")
+time.grid(row=0, column=1)
+update_time()
+
 
 
 if __name__ == "__main__":
