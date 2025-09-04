@@ -95,7 +95,8 @@ def update_time():
 # FIXME: TBH should be in a frame
 
 root = tk.Tk()
-root.geometry("1280x960")
+root.title("ENTRANCE")
+root.geometry("640x480")
 
 # set 3x3 grid
 for i in range(0, 3):
@@ -113,7 +114,7 @@ weatherframe = tk.Frame(root)
 weatherframe.rowconfigure(0, weight=1)
 weatherframe.rowconfigure(1, weight=1)
 
-weatherlabel = tk.Label(weatherframe, text=f"{str(datetime.date.today())} Weather", font=middlefont)
+weatherlabel = tk.Label(weatherframe, text=f"Weather", font=middlefont)
 weatherlabel.grid(row=0, column=0)
 
 weathercontent = tk.Label(weatherframe, text="")
@@ -124,18 +125,13 @@ weatherframe.grid(row=1, column=0)
 linkframe = tk.Frame(root)
 linkframe.rowconfigure(0, weight=1)
 linkframe.rowconfigure(1, weight=1)
-linkframe.rowconfigure(2, weight=1)
 
-linklabel = tk.Label(linkframe, text="Links")
+linklabel = tk.Label(linkframe, text="Important Links")
 linklabel.grid(row=0, column=0)
-
-slashdot = tk.Button(linkframe, text="Open Slashdot in Firefox", \
-                     command=lambda:open_link("www.slashdot.org"))
-slashdot.grid(row=1, column=0)
 
 email = tk.Button(linkframe, text="Open email", \
                   command=lambda:open_link("https://mail.proton.me/u/0/inbox"))
-email.grid(row=2, column=0)
+email.grid(row=1, column=0)
 
 linkframe.grid(row=1, column=2)
 
@@ -143,7 +139,22 @@ time = tk.Label(root, text="")
 time.grid(row=0, column=1)
 update_time()
 
+news = tk.Frame(root)
+news.rowconfigure(0, weight=1)
+news.rowconfigure(1, weight=1)
+news.rowconfigure(2, weight=1)
 
+nlabel = tk.Label(news, text="News", font=middlefont)
+nlabel.grid(row=0, column=0)
+
+slashdot = tk.Button(news, text="Slashdot", \
+                     command=lambda:open_link("www.slashdot.org"))
+slashdot.grid(row=1, column=0)
+
+nhl = tk.Button(news, text="NHL", command=lambda:open_link("www.nhl.com"))
+nhl.grid(row=2, column=0)
+
+news.grid(row=1, column=1)
 
 if __name__ == "__main__":
     weather = get_weather(get_location())
