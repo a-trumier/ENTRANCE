@@ -13,6 +13,9 @@ import tkinter as tk
 import requests_cache
 from retry_requests import retry
 import openmeteo_requests
+import tkinter.font as tkFont
+import datetime
+import webbrowser
 
 # Get location based on IP Address, then store the latitutude and longitude
 # in a file so that we don't look it up every time.
@@ -57,6 +60,7 @@ def get_weather(loc: (str, str)) -> (float, float, float):
     hourly_apparent_temperature = hourly.Variables(2).ValuesAsNumpy()
 
     # now we can just iterate through the arrays to find the max.
+    # FIXME: this sucks because there is probably a one liner to do this
     max_temp = -9999999
     max_feels_like = -999999
     max_precip = -99999
@@ -75,9 +79,14 @@ def get_weather(loc: (str, str)) -> (float, float, float):
 
     return (max_temp, max_feels_like, max_precip)
 
+# opens a link in firefox.
+def open_link(link: str):
+    firefox = webbrowser.Mozilla("/usr/bin/firefox")
+    firefox.open(link)
 
 
-# TBH
+# FIXME: TBH should be in a frame
+
 root = tk.Tk()
 root.geometry("1280x960")
 
@@ -86,8 +95,46 @@ for i in range(0, 3):
     root.columnconfigure(i, weight=1)
     root.rowconfigure(i, weight=1)
 
+font = tkFont.Font(size=25)
+middlefont = tkFont.Font(size=16)
+
+
+name = tk.Label(root, text=f"Welcome back {os.getenv("USER")}.", font=font)
+name.grid(row=0, column=1, sticky="N")
+
+weatherframe = tk.Frame(root)
+weatherframe.rowconfigure(0, weight=1)
+weatherframe.rowconfigure(1, weight=1)
+
+weatherlabel = tk.Label(weatherframe, text=f"{str(datetime.date.today())} Weather", font=middlefont)
+weatherlabel.grid(row=0, column=0)
+
+weathercontent = tk.Label(weatherframe, text="")
+weathercontent.grid(row=1, column=0)
+
+weatherframe.grid(row=1, column=0)
+
+linkframe = tk.Frame(root)
+linkframe.rowconfigure(0, weight=1)
+linkframe.rowconfigure(1, weight=1)
+linkframe.rowconfigure(2, weight=1)
+
+linklabel = tk.Label(linkframe, text="Links")
+linklabel.grid(row=0, column=0)
+
+slashdot = tk.Button(linkframe, text="Open Slashdot in Firefox", \
+                     command=lambda:open_link("www.slashdot.org"))
+slashdot.grid(row=1, column=0)
+
+email = tk.Button(linkframe, text="Open email", \
+                  command=lambda:open_link("https://mail.proton.me/u/0/inbox"))
+email.grid(row=2, column=0)
+
+linkframe.grid(row=1, column=2)
 
 
 if __name__ == "__main__":
     weather = get_weather(get_location())
+    weather_str = f"High: {int(weather[0])}°C\nFeels like: {int(weather[1])}°C\nPOP: {int(weather[2])}%"
+    weathercontent.config(text=weather_str)
     root.mainloop()
